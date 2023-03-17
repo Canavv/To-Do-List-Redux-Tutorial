@@ -1,0 +1,34 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector} from "react-redux";
+
+import { saveNewTodo } from "../todos/todosSlice";
+
+const Header = () => {
+    const [text, setText] = useState('')
+    const dispatch = useDispatch()
+
+    const handleChange = e => {
+        setText(e.target.value)
+    }
+
+    const handleKeyDown = e => {
+        const trimmedText = e.target.value.trim()
+        if (e.key === 'Enter' && trimmedText){
+            dispatch(saveNewTodo(trimmedText))
+            setText('')
+        }
+    }
+    
+    return (
+        <input 
+            type='text' 
+            placeholder='What needs to be done?' 
+            autoFocus={true}
+            value={text}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+        />
+    )
+}
+
+export default Header

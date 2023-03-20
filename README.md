@@ -19,13 +19,9 @@
 
 ## Install
 Install the project dependencies:
-...
-npm install
-...
+`npm install`
 start the development server
-...
-npm start
-...
+`npm start`
 
 ## Credits
 - Redux Fundamentals: https://redux.js.org/tutorials/fundamentals/part-1-overview

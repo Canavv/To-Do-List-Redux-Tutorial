@@ -18,10 +18,10 @@
 * Filter by status (all tasks, only the active task, or only the completed tasks) or color.
 
 ## Install
-Install the project dependencies:
-`npm install`
-start the development server
-`npm start`
+Install the project dependencies\
+`npm install`\
+start the development server\
+`npm start`\
 
 ## Credits
 - Redux Fundamentals: https://redux.js.org/tutorials/fundamentals/part-1-overview

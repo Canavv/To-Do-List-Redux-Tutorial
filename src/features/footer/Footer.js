@@ -1,10 +1,19 @@
 import React from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { availableColors, capitalize } from "../filters/colors";
-import { StatusFilters } from "../filters/filtersSlice";
+import {
+    StatusFilters,
+    colorFilterChanged,
+    statusFilterChanged
+} from "../filters/filtersSlice";
+import {
+    selectTodos,
+    completedTodosCleared,
+    allTodosCompleted
+} from "../todos/todosSlice";
 
-const RemainingTodos = ({count}) => {
+const RemainingTodos = ({ count }) => {
     const suffix = count === 1 ? "" : "s";
     return (
         <div>
@@ -14,7 +23,7 @@ const RemainingTodos = ({count}) => {
     )
 }
 
-const StatusFilter = ({status, onChange}) => {
+const StatusFilter = ({ status, onChange }) => {
     const renderedFilters = Object.keys(StatusFilters).map((key) => {
         const value = StatusFilters[key];
         const handleClick = () => {
@@ -37,19 +46,17 @@ const StatusFilter = ({status, onChange}) => {
     );
 }
 
-const ColorFilters = ({colors, onChange}) => {
+const ColorFilters = ({ onChange }) => {
     const renderedColors = availableColors.map((color) => {
-        const checked = colors.includes(color);
         const handleChange = (event) => {
             const changeType = event.target.checked ? 'added' : 'removed';
             onChange(color, changeType)
-            console.log(changeType)
         }
 
         return (
             <label key={color}>
-                <input 
-                    type='checkbox' 
+                <input
+                    type='checkbox'
                     name={color}
                     onChange={handleChange}
                 />
@@ -75,15 +82,17 @@ const ColorFilters = ({colors, onChange}) => {
 const Footer = () => {
     const dispatch = useDispatch();
     const todosRemaining = useSelector(state => {
-        const uncompletedTodos = state.todos.filter(todo => !todo.completed)
+        const uncompletedTodos = selectTodos(state).filter((todo) => !todo.completed)
         return uncompletedTodos.length;
     })
-    const {status, colors} = useSelector(state => state.filters);
-    const onMarkCompletedClicked = () => dispatch({type: 'todos/allCompleted'});
-    const onClearCompletedClicked = () => dispatch({type: 'todos/completedCleared'});
-    const onColorChange = (color, changeType) => dispatch({type: 'filters/colorFilterChanged', payload: {color, changeType}})
+    const { status, colors } = useSelector((state) => state.filters);
+    const onMarkCompletedClicked = () => dispatch(allTodosCompleted());
+    const onClearCompletedClicked = () => dispatch(completedTodosCleared());
+    const onColorChange = (color, changeType) => {
+        dispatch(colorFilterChanged(color, changeType))
+    }
     const onStatusChange = (status) => {
-        dispatch({type: 'filters/statusFilterChanged', payload: status})
+        dispatch(statusFilterChanged(status))
     };
 
     return (

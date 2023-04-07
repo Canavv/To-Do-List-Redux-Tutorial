@@ -1,35 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import timessolid from './timessolid.png';
 import { availableColors, capitalize } from "../filters/colors";
+import { todoColorSelected, todoDeleted, todoToggled, selectTodoById } from "./todosSlice";
 
-const selectTodoById = (state, todoId) => {
-    return state.todos.find(todo => todo.id === todoId);
-};
 
-const TodoListItem = ({id}) => {
-    const todos = useSelector(state => state.todos);
-    const todo = useSelector(state => selectTodoById(state, id));
-    const {text, completed, color} = todo;
+const TodoListItem = ({ id }) => {
+    const todo = useSelector((state) => selectTodoById(state, id));
+    const { text, completed, color } = todo;
 
     const dispatch = useDispatch();
 
     const handleCompletedChanged = () => {
-        dispatch({type: 'todos/todoToggled', payload: todo.id})
+        dispatch(todoToggled(todo.id))
     }
 
     const handleColorChanged = (e) => {
         const color = e.target.value
-        dispatch({
-            type: 'todos/colorSelected',
-            payload: {todoId: todo.id, color}
-        })
+        dispatch(todoColorSelected(todo.id, color))
     }
 
     const onDelete = () => {
-        dispatch({type: 'todos/todoDeleted', payload: todo.id})
-        dispatch({type: 'all', payload: todos})
+        dispatch(todoDeleted(todo.id))
+        //dispatch({type: 'all', payload: todos})
     }
 
     const colorOptions = availableColors.map((c) => (
@@ -54,19 +48,19 @@ const TodoListItem = ({id}) => {
                     <select
                         className="colorPicker"
                         value={color}
-                        style={{color}}
+                        style={{ color }}
                         onChange={handleColorChanged}
                     >
                         <option value=''></option>
                         {colorOptions}
                     </select>
                     <button className="destroy" onClick={onDelete}>
-                        <img src={timessolid} className='timesolid'/>
+                        <img alt="delete" src={timessolid} className='timesolid' />
                     </button>
                 </div>
             </div>
         </li>
-   );
+    );
 }
 
 export default TodoListItem

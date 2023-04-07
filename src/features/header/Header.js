@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector} from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { saveNewTodo } from "../todos/todosSlice";
 
 const Header = () => {
     const [text, setText] = useState('')
+    const [status, setStatus] = useState('idle')
     const dispatch = useDispatch()
 
     const handleChange = e => {
@@ -13,21 +14,30 @@ const Header = () => {
 
     const handleKeyDown = e => {
         const trimmedText = e.target.value.trim()
-        if (e.key === 'Enter' && trimmedText){
+        if (e.key === 'Enter' && trimmedText) {
             dispatch(saveNewTodo(trimmedText))
             setText('')
+            setStatus('idle')
         }
     }
-    
+
+    let isLoading = status === 'loading';
+    let placeholder = isLoading ? '' : 'What needs to be done?';
+    let loader = isLoading ? <div className="Loader" /> : null;
+
     return (
-        <input 
-            type='text' 
-            placeholder='What needs to be done?' 
-            autoFocus={true}
-            value={text}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-        />
+        <header>
+            <input
+                type='text'
+                placeholder='What needs to be done?'
+                autoFocus={true}
+                value={text}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                disabled={isLoading}
+            />
+            {loader}
+        </header>
     )
 }
 
